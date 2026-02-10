@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://api.example.com/schemas/task.json",
+  "title": "Task",
+  "description": "A todo task item owned by a specific user",
+  "type": "object",
+  "required": [
+    "id",
+    "user_id",
+    "title",
+    "completed",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Unique task identifier",
+      "minimum": 1,
+      "examples": [1, 42, 1337]
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Owner's user identifier from JWT token",
+      "minLength": 1,
+      "maxLength": 255,
+      "examples": ["user123", "auth0|507f1f77bcf86cd799439011"]
+    },
+    "title": {
+      "type": "string",
+      "description": "Task title (required)",
+      "minLength": 1,
+      "maxLength": 200,
+      "examples": ["Buy groceries", "Finish project report", "Call dentist"]
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "Optional task description",
+      "maxLength": 1000,
+      "examples": [
+        "Milk, eggs, bread, cheese",
+        "Complete sections 3-5 and proofread",
+        null
+      ]
+    },
+    "completed": {
+      "type": "boolean",
+      "description": "Task completion status",
+      "default": false,
+      "examples": [false, true]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp in ISO 8601 format (UTC)",
+      "examples": ["2026-02-08T10:00:00Z", "2026-02-08T15:30:45.123Z"]
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp in ISO 8601 format (UTC)",
+      "examples": ["2026-02-08T10:00:00Z", "2026-02-08T16:45:30.456Z"]
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": 1,
+      "user_id": "user123",
+      "title": "Buy groceries",
+      "description": "Milk, eggs, bread",
+      "completed": false,
+      "created_at": "2026-02-08T10:00:00Z",
+      "updated_at": "2026-02-08T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "user_id": "user456",
+      "title": "Finish project",
+      "description": null,
+      "completed": true,
+      "created_at": "2026-02-07T15:30:00Z",
+      "updated_at": "2026-02-08T09:00:00Z"
+    }
+  ],
+  "definitions": {
+    "TaskCreate": {
+      "title": "TaskCreate",
+      "description": "Schema for creating a new task",
+      "type": "object",
+      "required": ["title"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Task title (required)",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Optional task description",
+          "maxLength": 1000
+        }
+      },
+      "additionalProperties": false,
+      "examples": [
+        {
+          "title": "Buy groceries",
+          "description": "Milk, eggs, bread"
+        },
+        {
+          "title": "Call dentist"
+        }
+      ]
+    },
+    "TaskUpdate": {
+      "title": "TaskUpdate",
+      "description": "Schema for updating an existing task",
+      "type": "object",
+      "required": ["title", "completed"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Task title (required)",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Optional task description",
+          "maxLength": 1000
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Task completion status"
+        }
+      },
+      "additionalProperties": false,
+      "examples": [
+        {
+          "title": "Buy groceries and cook dinner",
+          "description": "Milk, eggs, bread, chicken",
+          "completed": false
+        },
+        {
+          "title": "Finish project",
+          "description": null,
+          "completed": true
+        }
+      ]
+    }
+  }
+}

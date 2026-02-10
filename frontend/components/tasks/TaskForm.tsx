@@ -72,21 +72,31 @@ export default function TaskForm({ initialValues, onSubmit, onCancel }: TaskForm
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Input
-        label="Title"
-        placeholder="Enter task title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        error={errors.title}
-        maxLength={200}
-      />
+      <div>
+        <label className="block text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-1">
+          Title
+        </label>
+        <input
+          type="text"
+          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
+            errors.title ? 'border-red-500' : 'border-gray-300'
+          }`}
+          placeholder="Enter task title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={200}
+        />
+        {errors.title && (
+          <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+        )}
+      </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-1">
           Description (optional)
         </label>
         <textarea
-          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
+          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent ${
             errors.description ? 'border-red-500' : 'border-gray-300'
           }`}
           placeholder="Enter task description"
@@ -101,12 +111,20 @@ export default function TaskForm({ initialValues, onSubmit, onCancel }: TaskForm
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button type="submit" loading={loading} className="flex-1">
-          {isEditMode ? 'Update Task' : 'Create Task'}
-        </Button>
-        <Button type="button" variant="secondary" onClick={onCancel} className="flex-1">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          {loading ? 'Saving...' : (isEditMode ? 'Update Task' : 'Create Task')}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 px-4 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+        >
           Cancel
-        </Button>
+        </button>
       </div>
     </form>
   );

@@ -54,7 +54,12 @@ export default function DashboardPage() {
     if (!editingTask) return;
 
     try {
-      await taskAPI.updateTask(editingTask.id, data);
+      // Send complete task data including completed status
+      await taskAPI.updateTask(editingTask.id, {
+        title: data.title,
+        description: data.description,
+        completed: editingTask.completed // Preserve existing completed status
+      });
       setShowModal(false);
       setEditingTask(null);
       await fetchTasks(); // Refetch tasks
@@ -95,9 +100,12 @@ export default function DashboardPage() {
       <div className="py-4 sm:py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Tasks</h1>
-          <Button onClick={() => setShowModal(true)}>
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+          >
             Add Task
-          </Button>
+          </button>
         </div>
 
         {/* Loading state */}
@@ -131,9 +139,12 @@ export default function DashboardPage() {
               Get started by creating your first task.
             </p>
             <div className="mt-6">
-              <Button onClick={() => setShowModal(true)}>
+              <button
+                onClick={() => setShowModal(true)}
+                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+              >
                 Create your first task
-              </Button>
+              </button>
             </div>
           </div>
         )}

@@ -26,12 +26,16 @@ export default function DashboardLayout({
       await authAPI.logout();
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_email');
+      // Also clear cookie
+      document.cookie = 'auth_token=; path=/; max-age=0';
       router.push('/login');
     } catch (error) {
       console.error('Logout failed:', error);
       // Force redirect even if API call fails
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_email');
+      // Also clear cookie
+      document.cookie = 'auth_token=; path=/; max-age=0';
       router.push('/login');
     }
   };

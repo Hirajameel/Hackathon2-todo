@@ -10,6 +10,26 @@ const apiClient: AxiosInstance = axios.create({
   timeout: 10000,
 });
 
+// Helper function to decode JWT and extract user_id
+function getUserIdFromToken(): string {
+  if (typeof window === 'undefined') {
+    throw new Error('Cannot get user ID on server side');
+  }
+
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  try {
+    // Decode JWT (format: header.payload.signature)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.sub;
+  } catch (error) {
+    throw new Error('Invalid token format');
+  }
+}
+
 // Request interceptor to attach JWT token
 apiClient.interceptors.request.use(
   (config) => {
@@ -42,6 +62,8 @@ apiClient.interceptors.response.use(
           // Unauthorized - clear session and redirect to login
           if (typeof window !== 'undefined') {
             localStorage.removeItem('auth_token');
+            // Also clear cookie
+            document.cookie = 'auth_token=; path=/; max-age=0';
             window.location.href = '/login';
           }
           console.error('Unauthorized: Please login again');
@@ -62,8 +84,18 @@ apiClient.interceptors.response.use(
           console.error('API Error:', data?.message || error.message);
       }
     } else if (error.request) {
-      // Network error
-      console.error('Network error: Please check your internet connection');
+      // Network error - request was made but no response received
+      console.error('Network error - No response received:', {
+        url: error.config?.url,
+        method: error.config?.method,
+        baseURL: error.config?.baseURL,
+        headers: error.config?.headers,
+        message: error.message
+      });
+      console.error('Please check:');
+      console.error('1. Backend server is running');
+      console.error('2. API URL is correct:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001');
+      console.error('3. CORS is configured properly');
     } else {
       // Other errors
       console.error('Error:', error.message);
@@ -95,29 +127,34 @@ export const authAPI = {
   },
 };
 
-// Task API methods (will be implemented in Phase 4)
+// Task API methods
 export const taskAPI = {
   getTasks: async (): Promise<Task[]> => {
-    const response = await apiClient.get<Task[]>('/api/tasks');
+    const userId = getUserIdFromToken();
+    const response = await apiClient.get<Task[]>(`/api/${userId}/tasks`);
     return response.data;
   },
 
   createTask: async (payload: TaskCreatePayload): Promise<Task> => {
-    const response = await apiClient.post<Task>('/api/tasks', payload);
+    const userId = getUserIdFromToken();
+    const response = await apiClient.post<Task>(`/api/${userId}/tasks`, payload);
     return response.data;
   },
 
   updateTask: async (id: string | number, payload: TaskUpdatePayload): Promise<Task> => {
-    const response = await apiClient.put<Task>(`/api/tasks/${id}`, payload);
+    const userId = getUserIdFromToken();
+    const response = await apiClient.put<Task>(`/api/${userId}/tasks/${id}`, payload);
     return response.data;
   },
 
   deleteTask: async (id: string | number): Promise<void> => {
-    await apiClient.delete(`/api/tasks/${id}`);
+    const userId = getUserIdFromToken();
+    await apiClient.delete(`/api/${userId}/tasks/${id}`);
   },
 
   toggleTaskStatus: async (id: string | number): Promise<Task> => {
-    const response = await apiClient.patch<Task>(`/api/tasks/${id}/toggle`);
+    const userId = getUserIdFromToken();
+    const response = await apiClient.patch<Task>(`/api/${userId}/tasks/${id}/complete`);
     return response.data;
   },
 };
