@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '@/components/layout/Header';
 import { authAPI } from '@/lib/api-client';
 
 export default function DashboardLayout({
@@ -42,7 +41,6 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header userEmail={userEmail} onLogout={handleLogout} />
       <main>{children}</main>
     </div>
   );

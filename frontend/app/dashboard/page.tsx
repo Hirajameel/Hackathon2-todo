@@ -95,16 +95,52 @@ export default function DashboardPage() {
     setEditingTask(null);
   };
 
+  // Get user email from localStorage
+  const userEmail = typeof window !== 'undefined' ? localStorage.getItem('user_email') : null;
+
+  const handleLogout = async () => {
+    try {
+      // Clear authentication data
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_email');
+
+      // Also clear cookie
+      document.cookie = 'auth_token=; path=/; max-age=0';
+      
+      // Redirect to login
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Force redirect even if API call fails
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_email');
+      // Also clear cookie
+      document.cookie = 'auth_token=; path=/; max-age=0';
+      window.location.href = '/login';
+    }
+  };
+
   return (
-    <Layout>
+    <Layout userEmail={userEmail || undefined} onLogout={handleLogout}>
       <div className="py-4 sm:py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Tasks</h1>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">My Tasks</h1>
+            <p className="text-gray-600 text-sm mt-1">
+              {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'} • {tasks.filter(t => t.completed).length} completed
+            </p>
+          </div>
           <button
             onClick={() => setShowModal(true)}
-            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+            className="group relative px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
           >
-            Add Task
+            <span className="relative z-10 flex items-center">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Add Task
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </div>
 
@@ -120,30 +156,38 @@ export default function DashboardPage() {
 
         {/* Empty state */}
         {!loading && !error && tasks.length === 0 && (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-            <h3 className="mt-2 text-lg font-medium text-gray-900">No tasks yet</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Get started by creating your first task.
+          <div className="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-100">
+            <div className="mx-auto w-24 h-24 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center">
+              <svg
+                className="h-12 w-12 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                />
+              </svg>
+            </div>
+            <h3 className="mt-6 text-xl font-bold text-gray-900">No tasks yet</h3>
+            <p className="mt-2 text-gray-600 max-w-md mx-auto">
+              Get started by creating your first task. Organize your work and boost your productivity.
             </p>
-            <div className="mt-6">
+            <div className="mt-8">
               <button
                 onClick={() => setShowModal(true)}
-                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                className="group relative px-8 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
               >
-                Create your first task
+                <span className="relative z-10 flex items-center justify-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Create your first task
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </div>
           </div>
