@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Production builds
+.next/
+out/
+
+# Environment variables
+.env*.local
+.env.production.local
+.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Windows specific problematic files
+nul
+con
+aux
+com1
+com2
+com3
+com4
+lpt1
+lpt2
+lpt3
+prn
+
+# Logs
+*.log
+
+# Database files
+*.db
+*.sqlite
