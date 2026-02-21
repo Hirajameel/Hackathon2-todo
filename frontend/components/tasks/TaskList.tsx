@@ -49,7 +49,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggle }: TaskList
                     <div className="ml-2 sm:ml-2.5">
                       <div className="text-sm font-medium text-gray-900 truncate max-w-[60px] sm:max-w-[100px]">{task.title}</div>
                       <div className="text-xs text-gray-500">
-                        {new Date(task.created_at).toLocaleDateString()}
+                        {new Date(task.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
@@ -145,7 +145,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggle }: TaskList
                   {task.description || <span className="text-gray-400 italic">No desc</span>}
                 </p>
                 <div className="mt-1 text-xs text-gray-500">
-                  {new Date(task.created_at).toLocaleDateString()}
+                  {new Date(task.createdAt).toLocaleDateString()}
                 </div>
                 <div className="mt-2 flex space-x-1">
                   <button
