@@ -33,3 +33,6 @@ prn
 # Database files
 *.db
 *.sqlite
+
+# Netlify
+.netlify/

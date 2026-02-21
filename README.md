@@ -4,7 +4,7 @@ A full-stack TODO application with authentication and task management.
 
 ## Project Structure
 
-- **frontend/** - Next.js frontend application with React
+- **frontend/** - Next.js frontend application with React (Deployed on Netlify)
 - **backend/** - Backend API server
 - **specs/** - Project specifications and documentation
 
@@ -31,6 +31,16 @@ npm run dev
 cd backend
 # Follow backend-specific setup instructions
 ```
+
+## Deployment
+
+### Frontend (Netlify)
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed Netlify deployment instructions.
+
+### Backend
+
+Backend should be deployed separately on Render, Railway, or similar platform.
 
 ## Tech Stack
 
